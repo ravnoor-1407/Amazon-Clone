@@ -35,7 +35,8 @@ Since this is a static website (frontend only), it is very lightweight and runs 
 | **Code Editor** | VS Code (Recommended) | If you intend to edit or customize the code. |
 
 ## 🖥️ Desktop Screenshots
-Main Website :  ![Main Website](Screenshots/Main_Website.png)
+**Main Website :**
+![Main Website](Screenshots/Main_Website.png)
 
 | Navigation Bar | Details Panel |
 | :---: | :---: |
