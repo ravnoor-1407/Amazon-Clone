@@ -72,10 +72,13 @@ This project recreates the visual elements of Amazon, including:
 ## 📂 Project Structure
 ```
 amazon-clone/
-├── images/           # Contains logo, banner, and product images
-├── index.html        # Main HTML file (Home Page)
-├── style.css         # Main stylesheet for layout and responsiveness
-└── README.md         # Project documentation
+├── Screenshots/          # Contains project preview images (e.g., Main_Website.png, Navigation_Bar.png)
+├── amazon_logo.png       # Logo image used in the navigation bar
+├── box[1-8]_image.jpg    # Product images for the grid layout (box1 to box8)
+├── hero_image.jpg        # Background image for the hero section
+├── index.html            # Main HTML file (Home Page)
+├── styles.css            # Main stylesheet for layout and responsiveness
+└── README.md             # Project documentation
 ```
 
 ## ⚙️ How to Run the Project
