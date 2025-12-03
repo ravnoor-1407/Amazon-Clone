@@ -35,11 +35,11 @@ Since this is a static website (frontend only), it is very lightweight and runs 
 | **Code Editor** | VS Code (Recommended) | If you intend to edit or customize the code. |
 
 ## 🖥️ Desktop Screenshots
-Main Website :  ![Main Website]("Screenshots/Main_Website.png")
+Main Website :  ![Main Website](Screenshots/Main_Website.png)
 
 | Navigation Bar | Details Panel |
 | :---: | :---: |
-| ![Navigation Bar]("Screenshots/Navigation_Bar.png") | ![Details Panel](Screenshots/Details_Panel.png) |
+| ![Navigation Bar](Screenshots/Navigation_Bar.png) | ![Details Panel](Screenshots/Details_Panel.png) |
 | **Hero Section** | **Shop Section** |
 | ![Hero Section](Screenshots/Hero_Section.png) | ![Shop Section](Screenshots/Shop_Section.png) |
 | **Footer** | **Copyright** |
