@@ -12,6 +12,10 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    position: sticky;
+    top: 0;
+    z-index: 1000; 
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .nav-logo {

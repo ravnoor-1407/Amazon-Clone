@@ -39,3 +39,16 @@ productButtons.forEach(button => {
     button.style.cursor = "pointer"; // Make it look clickable
     button.addEventListener("click", addToCart);
 });
+
+// 5. Navbar Shadow on Scroll
+const navbar = document.querySelector(".navbar");
+
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 0) {
+        // Add a shadow when the user scrolls down
+        navbar.classList.add("navbar-shadow");
+    } else {
+        // Remove shadow when back at the very top
+        navbar.classList.remove("navbar-shadow");
+    }
+});
