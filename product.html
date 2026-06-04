@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail — Amazon Clone</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background: #EAEDED; }
+
+        .detail-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .breadcrumb {
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        .breadcrumb a { color: #007185; text-decoration: none; }
+        .breadcrumb a:hover { color: #c45500; text-decoration: underline; }
+
+        .detail-card {
+            background: #fff;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: 420px 1fr 240px;
+            gap: 24px;
+            padding: 24px;
+        }
+
+        /* Left: Image Gallery */
+        .detail-gallery { display: flex; flex-direction: column; gap: 12px; }
+
+        .main-img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            transition: transform 0.3s;
+            cursor: zoom-in;
+        }
+
+        .main-img:hover { transform: scale(1.02); }
+
+        .thumb-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border: 2px solid transparent;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+
+        .thumb.active, .thumb:hover { border-color: #e47911; }
+
+        /* Middle: Info */
+        .detail-info { display: flex; flex-direction: column; gap: 12px; }
+
+        .detail-badge {
+            display: inline-block;
+            background: #cc0c39;
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 3px;
+            width: fit-content;
+        }
+
+        .detail-badge.bestseller { background: #e47911; }
+        .detail-badge.choice { background: #006021; }
+        .detail-badge.new { background: #007185; }
+
+        .detail-title {
+            font-size: 1.25rem;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #0F1111;
+        }
+
+        .detail-stars {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .star-icons i { color: #e47911; font-size: 0.95rem; }
+        .star-score { font-size: 0.875rem; color: #555; }
+        .review-link { color: #007185; font-size: 0.875rem; cursor: pointer; }
+        .review-link:hover { color: #c45500; }
+
+        .detail-price-section { display: flex; flex-direction: column; gap: 4px; }
+
+        .detail-price-label { font-size: 0.8rem; color: #555; }
+
+        .detail-price {
+            font-size: 1.7rem;
+            font-weight: 400;
+            color: #0F1111;
+        }
+
+        .detail-price sup { font-size: 0.9rem; vertical-align: super; }
+
+        .detail-price-sub { font-size: 0.8rem; color: #555; }
+
+        .detail-orig {
+            font-size: 0.875rem;
+            color: #555;
+        }
+
+        .detail-orig span { text-decoration: line-through; }
+        .detail-save { color: #cc0c39; font-weight: 600; font-size: 0.875rem; }
+
+        .prime-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+            color: #00A8E1;
+            font-weight: 700;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        /* Color & Size Options */
+        .option-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 6px 14px;
+            border: 1.5px solid #ccc;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .chip:hover { border-color: #e47911; }
+        .chip.selected { border-color: #e47911; background: #fff8ee; font-weight: 700; }
+
+        /* Description bullets */
+        .detail-desc ul {
+            padding-left: 18px;
+            font-size: 0.875rem;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        /* Right: Buy Box */
+        .buy-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.875rem;
+        }
+
+        .buy-price {
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .buy-price sup { font-size: 0.85rem; vertical-align: super; }
+
+        .buy-delivery {
+            color: #007600;
+            font-weight: 700;
+        }
+
+        .buy-in-stock {
+            color: #007600;
+            font-size: 1rem;
+        }
+
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-selector select {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 9px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            border: 1px solid;
+        }
+
+        .btn-buy-now {
+            background: #FFD814;
+            border-color: #FCD200;
+        }
+
+        .btn-buy-now:hover { background: #f0c912; }
+
+        .btn-buy-cart {
+            background: #FFA41C;
+            border-color: #FF8F00;
+            color: #0F1111;
+        }
+
+        .btn-buy-cart:hover { background: #f0960e; }
+
+        .buy-secure {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #555;
+            font-size: 0.78rem;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1000px) {
+            .detail-card { grid-template-columns: 1fr 1fr; }
+            .buy-box { grid-column: span 2; }
+        }
+
+        @media (max-width: 640px) {
+            .detail-card { grid-template-columns: 1fr; padding: 16px; }
+            .buy-box { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="nav-logo border" onclick="location.href='index.html'" style="cursor:pointer;">
+                <div class="logo"></div>
+            </div>
+            <div class="nav-search" style="flex:1;max-width:700px;">
+                <select class="search-category" id="search-category">
+                    <option>All</option>
+                    <option>Clothes</option>
+                    <option>Electronics</option>
+                    <option>Furniture</option>
+                    <option>Health & Personal Care</option>
+                    <option>Beauty Picks</option>
+                    <option>Pet Care & Essentials</option>
+                    <option>New Arrivals in Toys</option>
+                </select>
+                <input class="search-input" id="amazon-search" placeholder="Search Amazon">
+                <div class="search-icon" id="search-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+            </div>
+            <div class="nav-cart border" id="nav-cart-btn">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-count">Cart (0)</span>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-all" onclick="location.href='index.html'"><i class="fa-solid fa-bars"></i> All</div>
+            <div class="panel-options">
+                <p onclick="location.href='products.html'">Today's Deals</p>
+                <p>Customer Service</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="detail-layout">
+        <div class="breadcrumb" id="breadcrumb">
+            <a href="index.html">Amazon</a> › <a href="products.html">All Products</a> › <span id="bc-category"></span>
+        </div>
+
+        <div class="detail-card" id="detail-card">
+            <div style="text-align:center;padding:60px;grid-column:1/-1;color:#888;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;"></i>
+                <p style="margin-top:12px;">Loading product…</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-overlay"></div>
+    <div id="cart-sidebar">
+        <div id="cart-header" style="padding:16px;background:#232F3E;color:#fff;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:1.1rem;font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Your Cart</span>
+            <button id="cart-close" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;">&times;</button>
+        </div>
+        <div id="cart-items" style="flex:1;overflow-y:auto;padding:16px;"></div>
+        <div id="cart-footer" style="padding:16px;border-top:1px solid #eee;"></div>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(location.search);
+        const productId = urlParams.get("id");
+        const product = getProductById(productId);
+
+        // Search navigation
+        document.getElementById("search-btn").addEventListener("click", () => {
+            const q = document.getElementById("amazon-search").value;
+            if (q.trim()) location.href = `products.html?q=${encodeURIComponent(q)}`;
+        });
+        document.getElementById("amazon-search").addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                const q = e.target.value;
+                if (q.trim()) location.href = `products.html?q=${encodeURIComponent(q)}`;
+            }
+        });
+
+        if (!product) {
+            document.getElementById("detail-card").innerHTML = `
+                <div style="text-align:center;padding:80px 20px;grid-column:1/-1;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:3rem;color:#e47911;"></i>
+                    <p style="font-size:1.2rem;font-weight:700;margin:16px 0 8px;">Product not found</p>
+                    <a href="products.html" style="color:#007185;">Browse all products →</a>
+                </div>`;
+        } else {
+            document.title = product.name + " — Amazon Clone";
+            document.getElementById("bc-category").textContent = product.category;
+
+            // Rating Star icons HTML
+            function starIcons(rating) {
+                let s = "";
+                for (let i = 1; i <= 5; i++) {
+                    if (rating >= i) s += '<i class="fa-solid fa-star"></i>';
+                    else if (rating >= i - 0.5) s += '<i class="fa-solid fa-star-half-stroke"></i>';
+                    else s += '<i class="fa-regular fa-star"></i>';
+                }
+                return s;
+            }
+
+            const save = ((product.originalPrice - product.price) / product.originalPrice * 100).toFixed(0);
+            const cents = (product.price % 1 * 100).toFixed(0).padStart(2, "0");
+            const dollars = Math.floor(product.price);
+
+            const colorOpts = product.colors.length
+                ? `<div class="section-label">Color: <span id="selected-color" style="font-weight:400">${product.colors[0]}</span></div>
+                   <div class="option-chips" id="color-chips">
+                     ${product.colors.map((c, i) => `<div class="chip${i===0?' selected':''}" onclick="selectOption('color-chips','selected-color',this,'${c}')">${c}</div>`).join("")}
+                   </div>` : "";
+
+            const sizeOpts = product.sizes.length
+                ? `<div class="section-label" style="margin-top:8px;">Size: <span id="selected-size" style="font-weight:400">${product.sizes[0]}</span></div>
+                   <div class="option-chips" id="size-chips">
+                     ${product.sizes.map((s, i) => `<div class="chip${i===0?' selected':''}" onclick="selectOption('size-chips','selected-size',this,'${s}')">${s}</div>`).join("")}
+                   </div>` : "";
+
+            const badgeMap = {"Best Seller":"bestseller","Amazon's Choice":"choice","New":"new","Sale":"sale"};
+
+            // Render product details
+            document.getElementById("detail-card").innerHTML = `
+                <!-- Gallery -->
+                <div class="detail-gallery">
+                    <img class="main-img" id="main-img" src="${product.image}" alt="${product.name}">
+                    <div class="thumb-row">
+                        <img class="thumb active" src="${product.image}" onclick="setMainImg(this)" alt="view 1">
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="detail-info">
+                    ${product.badge ? `<span class="detail-badge ${badgeMap[product.badge]||''}">${product.badge}</span>` : ""}
+                    <h1 class="detail-title">${product.name}</h1>
+
+                    <div class="detail-stars">
+                        <span class="star-icons">${starIcons(product.rating)}</span>
+                        <span class="star-score">${product.rating.toFixed(1)}</span>
+                        <span class="review-link">${product.reviews.toLocaleString()} ratings</span>
+                    </div>
+
+                    <div class="detail-price-section">
+                        <div class="detail-price-label">Price:</div>
+                        <div class="detail-price"><sup>$</sup>${dollars}<sup>${cents}</sup></div>
+                        <div class="detail-orig">List Price: <span>$${product.originalPrice.toFixed(2)}</span> <span class="detail-save">Save $${(product.originalPrice - product.price).toFixed(2)} (${save}%)</span></div>
+                        <div class="detail-price-sub">Inclusive of all taxes</div>
+                    </div>
+
+                    <div class="prime-row">
+                        <i class="fa-brands fa-amazon" style="font-size:1.1rem;"></i>
+                        FREE delivery <b>Tomorrow</b> if you order within 5 hrs
+                    </div>
+
+                    ${colorOpts}
+                    ${sizeOpts}
+
+                    <div class="detail-desc" style="margin-top:8px;">
+                        <div class="section-label">About this item</div>
+                        <ul>
+                            ${product.description.split(". ").filter(Boolean).map(s => `<li>${s.trim()}</li>`).join("")}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Buy Box -->
+                <div class="buy-box">
+                    <div class="buy-price"><sup>$</sup>${dollars}<sup>${cents}</sup></div>
+                    <div class="buy-delivery">FREE delivery Tomorrow</div>
+                    <div class="buy-in-stock">In Stock</div>
+                    <div class="qty-selector">
+                        <span>Qty:</span>
+                        <select id="qty-select">
+                            ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}">${n}</option>`).join("")}
+                        </select>
+                    </div>
+                    <button class="btn-buy btn-buy-cart" onclick="addMultiToCart()">Add to Cart</button>
+                    <button class="btn-buy btn-buy-now" onclick="location.href='checkout.html'">Buy Now</button>
+                    <div class="buy-secure">
+                        <i class="fa-solid fa-lock"></i> Secure transaction
+                    </div>
+                    <hr style="border-color:#eee;margin:4px 0;">
+                    <div style="font-size:0.78rem;color:#555;line-height:1.6;">
+                        <div><b>Ships from</b> Amazon</div>
+                        <div><b>Sold by</b> Amazon.com</div>
+                        <div style="margin-top:6px;color:#007185;cursor:pointer;" onclick="product && toggleWishlist(product.name)" title="Add to Wish List">❤️ Add to Wish List</div>
+                    </div>
+                </div>`;
+        }
+
+        // Function for color/size selection
+        function selectOption(groupId, labelId, el, value) {
+            document.querySelectorAll(`#${groupId} .chip`).forEach(c => c.classList.remove("selected"));
+            el.classList.add("selected");
+            document.getElementById(labelId).textContent = value;
+        }
+
+        //Function for image change on thumbnail click
+        function setMainImg(thumb) {
+            document.getElementById("main-img").src = thumb.src;
+            document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
+            thumb.classList.add("active");
+        }
+
+        // Function to add multiple quantities to cart
+        function addMultiToCart() {
+            if (!product) return;
+            const qty = parseInt(document.getElementById("qty-select")?.value || 1);
+            for (let i = 0; i < qty; i++) addToCart(product.name, product.price);
+        }
+    </script>
+</body>
+</html>
