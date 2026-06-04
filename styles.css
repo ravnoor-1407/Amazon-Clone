@@ -86,7 +86,7 @@
 .nav-search {
     display: flex;
     align-items: center;
-    background-color: #fff;        /* ← was incorrectly pink */
+    background-color: #fff;     
     width: 620px;
     height: 40px;
     border-radius: 4px;
@@ -95,7 +95,7 @@
 }
 
 .nav-search:focus-within {
-    box-shadow: 0 0 0 3px #f90;    /* orange glow when focused */
+    box-shadow: 0 0 0 3px #f90;  
 }
 
 .search-category {
@@ -140,7 +140,7 @@
     background-color: #f3a847;
 }
 
-/* ── NAV TEXT ── */
+/*Navigation Text*/
 span {
     font-size: 0.70rem;
 }
@@ -228,7 +228,7 @@ span {
     background-image: url("hero_image.jpg");
     background-size: cover;
     background-position: center;
-    height: 350px;
+    height: 500px;
     display: flex;
     justify-content: center;
     align-items: flex-end;
@@ -381,16 +381,6 @@ ul a:hover {
 }
 
 .foot-panel3 {
-    background-color: #222f3d;
-    color: #FFFFFF;
-    border-top: 0.5px solid rgba(255,255,255,0.2);
-    height: 70px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.foot-panel4 {
     background-color: #222f3d;
     color: #FFFFFF;
     padding: 20px;
