@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Amazon Clone</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .signin-header {
+            display: flex;
+            justify-content: center;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .signin-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px 40px;
+        }
+
+        .signin-logo {
+            width: 100px;
+            height: 36px;
+            background: url('amazon_logo.png') center / contain no-repeat;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        /* Tab Toggle */
+        .auth-tabs {
+            display: flex;
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid #ddd;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            margin-bottom: -1px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: #f5f5f5;
+            color: #555;
+            border-bottom: 3px solid transparent;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .auth-tab.active {
+            background: #fff;
+            color: #0F1111;
+            border-bottom-color: #e47911;
+        }
+
+        /* Authentication panel */
+        .auth-card {
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            padding: 24px;
+        }
+
+        .auth-card h1 { font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; }
+
+        .form-group { margin-bottom: 14px; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #888;
+            border-radius: 3px;
+            font-size: 0.875rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .form-group input:focus {
+            border-color: #e47911;
+            box-shadow: 0 0 0 3px rgba(228,121,17,0.2);
+        }
+
+        .form-group input.error { border-color: #cc0c39; }
+
+        .field-hint { font-size: 0.72rem; color: #555; margin-top: 3px; }
+        .field-error-msg { font-size: 0.75rem; color: #cc0c39; margin-top: 3px; display: none; }
+        .field-error-msg.show { display: block; }
+
+        /* Password toggle: means show/hide password */
+        .pw-wrap { position: relative; }
+
+        .pw-wrap input { padding-right: 40px; }
+
+        .pw-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #007185;
+            font-size: 0.8rem;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        .pw-toggle:hover { color: #c45500; }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 6px;
+            background: #eee;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0;
+        }
+
+        .strength-label { font-size: 0.72rem; margin-top: 3px; }
+
+        .btn-signin {
+            width: 100%;
+            padding: 10px;
+            background: #FFD814;
+            border: 1px solid #FCD200;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            margin-top: 8px;
+        }
+
+        .btn-signin:hover { background: #f0c912; }
+
+        .terms {
+            font-size: 0.72rem;
+            color: #555;
+            margin: 12px 0 0;
+            line-height: 1.5;
+        }
+
+        .terms a { color: #007185; text-decoration: none; }
+        .terms a:hover { text-decoration: underline; color: #c45500; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0;
+            font-size: 0.78rem;
+            color: #888;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+
+        /* Social Buttons: to sign in via Google or Apple */
+        .social-btns { display: flex; flex-direction: column; gap: 8px; }
+
+        .btn-social {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .btn-social:hover { background: #f5f5f5; border-color: #aaa; }
+
+        /* Success Pop up after successful sign in */
+        .success-box {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: #007600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to   { transform: scale(1); }
+        }
+
+        /* Footer */
+        .signin-footer {
+            border-top: 1px solid #ddd;
+            padding: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #555;
+        }
+
+        .signin-footer a { color: #007185; text-decoration: none; margin: 0 8px; }
+        .signin-footer a:hover { text-decoration: underline; }
+
+        .alert-box {
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .alert-box.error { background: #fff5f5; border: 1px solid #f5c6cb; color: #cc0c39; display: block; }
+        .alert-box.success { background: #f0fff4; border: 1px solid #c6f6d5; color: #007600; display: block; }
+    </style>
+</head>
+<body>
+    <div class="signin-header">
+        <div class="signin-logo" onclick="location.href='index.html'" title="Go to Homepage"></div>
+    </div>
+
+    <div class="signin-body">
+        <!-- Tab Toggle(Sign In or Create Account) -->
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</div>
+            <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Create Account</div>
+        </div>
+
+        <!-- Authentication Card -->
+        <div class="auth-card" id="auth-card"></div>
+    </div>
+
+    <div class="signin-footer">
+        <a href="#">Conditions of Use</a>
+        <a href="#">Privacy Notice</a>
+        <a href="#">Help</a>
+        <div style="margin-top:8px;">© 1996-2025, Amazon.com, Inc.</div>
+    </div>
+
+    <script>
+        let activeTab = "signin";
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById("tab-signin").classList.toggle("active", tab === "signin");
+            document.getElementById("tab-register").classList.toggle("active", tab === "register");
+            renderCard();
+        }
+
+        function renderCard() {
+            if (activeTab === "signin") renderSignIn();
+            else renderRegister();
+        }
+
+        // Function to render Sign In form
+        function renderSignIn() {
+            document.getElementById("auth-card").innerHTML = `
+                <h1>Sign In</h1>
+                <div class="alert-box" id="signin-alert"></div>
+
+                <div class="form-group">
+                    <label for="si-email">Email or mobile phone number</label>
+                    <input type="email" id="si-email" autocomplete="email" placeholder="you@example.com">
+                    <div class="field-error-msg" id="err-si-email">Enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="si-password">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="si-password" autocomplete="current-password" placeholder="At least 6 characters">
+                        <span class="pw-toggle" onclick="togglePw('si-password',this)">Show</span>
+                    </div>
+                    <div class="field-error-msg" id="err-si-password">Enter your password</div>
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+                    <a href="#" style="font-size:0.78rem;color:#007185;text-decoration:none;">Forgot password?</a>
+                </div>
+
+                <button class="btn-signin" onclick="doSignIn()">Sign In</button>
+
+                <p class="terms">
+                    By continuing, you agree to Amazon's
+                    <a href="#">Conditions of Use</a> and
+                    <a href="#">Privacy Notice</a>.
+                </p>
+
+                <div class="divider">or sign in with</div>
+
+                <div class="social-btns">
+                    <button class="btn-social" onclick="socialLogin('Google')">
+                        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                        Continue with Google
+                    </button>
+                    <button class="btn-social" onclick="socialLogin('Apple')">
+                        <i class="fa-brands fa-apple" style="font-size:1.1rem;"></i>
+                        Continue with Apple
+                    </button>
+                </div>
+
+                <div style="text-align:center;margin-top:20px;font-size:0.8rem;">
+                    New to Amazon?
+                    <a href="#" onclick="switchTab('register');return false;" style="color:#007185;font-weight:700;">Create your account</a>
+                </div>`;
+        }
+
+        function doSignIn() {
+            const email    = document.getElementById("si-email").value.trim();
+            const password = document.getElementById("si-password").value;
+            const alert    = document.getElementById("signin-alert");
+            let valid = true;
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById("si-email").classList.add("error");
+                document.getElementById("err-si-email").classList.add("show");
+                valid = false;
+            } else {
+                document.getElementById("si-email").classList.remove("error");
+                document.getElementById("err-si-email").classList.remove("show");
+            }
+
+            if (!password) {
+                document.getElementById("si-password").classList.add("error");
+                document.getElementById("err-si-password").classList.add("show");
+                valid = false;
+            } else {
+                document.getElementById("si-password").classList.remove("error");
+                document.getElementById("err-si-password").classList.remove("show");
+            }
+
+            if (!valid) return;
+
+            // Check stored user
+            const users = JSON.parse(localStorage.getItem("amazonUsers") || "[]");
+            const user  = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                localStorage.setItem("amazonCurrentUser", JSON.stringify(user));
+                showSuccess(`Welcome back, ${user.name}!`);
+            } else {
+                alert.className = "alert-box error";
+                alert.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Incorrect email or password. Please try again.';
+            }
+        }
+
+        // Function to render Create Account form
+        function renderRegister() {
+            document.getElementById("auth-card").innerHTML = `
+                <h1>Create Account</h1>
+                <div class="alert-box" id="reg-alert"></div>
+
+                <div class="form-group">
+                    <label for="reg-name">Your name</label>
+                    <input type="text" id="reg-name" placeholder="First and last name" autocomplete="name">
+                    <div class="field-error-msg" id="err-reg-name">Enter your name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email">
+                    <div class="field-error-msg" id="err-reg-email">Enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-phone">Mobile number (optional)</label>
+                    <input type="tel" id="reg-phone" placeholder="+91 9876543210">
+                    <div class="field-hint">May be used for account verification</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-pw">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="reg-pw" placeholder="At least 8 characters"
+                            oninput="checkStrength(this.value)">
+                        <span class="pw-toggle" onclick="togglePw('reg-pw',this)">Show</span>
+                    </div>
+                    <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+                    <div class="strength-label" id="strength-label" style="color:#888;"></div>
+                    <div class="field-error-msg" id="err-reg-pw">Password must be at least 8 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-pw2">Re-enter password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="reg-pw2" placeholder="Re-enter password">
+                        <span class="pw-toggle" onclick="togglePw('reg-pw2',this)">Show</span>
+                    </div>
+                    <div class="field-error-msg" id="err-reg-pw2">Passwords do not match</div>
+                </div>
+
+                <button class="btn-signin" style="background:#FFA41C;border-color:#FF8F00;" onclick="doRegister()">
+                    Create your Amazon account
+                </button>
+
+                <p class="terms">
+                    By creating an account, you agree to Amazon's
+                    <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
+                </p>
+
+                <div style="text-align:center;margin-top:20px;font-size:0.8rem;">
+                    Already have an account?
+                    <a href="#" onclick="switchTab('signin');return false;" style="color:#007185;font-weight:700;">Sign in</a>
+                </div>`;
+        }
+
+        // Function to check password strength
+        function checkStrength(pw) {
+            const fill  = document.getElementById("strength-fill");
+            const label = document.getElementById("strength-label");
+            if (!fill) return;
+            let score = 0;
+            if (pw.length >= 8) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+            const map = [
+                { width:"0%",   color:"#ccc",    text:"" },
+                { width:"25%",  color:"#cc0c39", text:"Weak" },
+                { width:"50%",  color:"#e47911", text:"Fair" },
+                { width:"75%",  color:"#febd68", text:"Good" },
+                { width:"100%", color:"#007600", text:"Strong" }
+            ];
+            fill.style.width  = map[score].width;
+            fill.style.background = map[score].color;
+            label.textContent = map[score].text;
+            label.style.color = map[score].color;
+        }
+
+        // Function to handle registration logic
+        function doRegister() {
+            const name  = document.getElementById("reg-name").value.trim();
+            const email = document.getElementById("reg-email").value.trim();
+            const pw    = document.getElementById("reg-pw").value;
+            const pw2   = document.getElementById("reg-pw2").value;
+            let valid = true;
+
+            const checks = [
+                { id:"reg-name",  err:"err-reg-name",  ok: name.length > 0 },
+                { id:"reg-email", err:"err-reg-email", ok: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) },
+                { id:"reg-pw",    err:"err-reg-pw",    ok: pw.length >= 8 },
+                { id:"reg-pw2",   err:"err-reg-pw2",   ok: pw === pw2 && pw2.length > 0 }
+            ];
+
+            checks.forEach(c => {
+                document.getElementById(c.id)?.classList.toggle("error", !c.ok);
+                document.getElementById(c.err)?.classList.toggle("show", !c.ok);
+                if (!c.ok) valid = false;
+            });
+
+            if (!valid) return;
+
+            const users = JSON.parse(localStorage.getItem("amazonUsers") || "[]");
+            if (users.find(u => u.email === email)) {
+                document.getElementById("reg-alert").className = "alert-box error";
+                document.getElementById("reg-alert").innerHTML = "An account with that email already exists.";
+                return;
+            }
+
+            const newUser = { name, email, password: pw, createdAt: new Date().toISOString() };
+            users.push(newUser);
+            localStorage.setItem("amazonUsers", JSON.stringify(users));
+            localStorage.setItem("amazonCurrentUser", JSON.stringify(newUser));
+            showSuccess(`Account created! Welcome, ${name}!`);
+        }
+
+        // Function to show/hide password
+        function togglePw(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            if (input.type === "password") { input.type = "text"; btn.textContent = "Hide"; }
+            else { input.type = "password"; btn.textContent = "Show"; }
+        }
+
+        // Function to simulate social login (Google/Apple)
+        function socialLogin(provider) {
+            showSuccess(`Signed in with ${provider}! (Demo only)`);
+        }
+
+        // Function to show success message after sign in or registration
+        function showSuccess(message) {
+            const user = JSON.parse(localStorage.getItem("amazonCurrentUser") || "null");
+            document.getElementById("auth-card").innerHTML = `
+                <div class="success-box">
+                    <div class="success-icon"><i class="fa-solid fa-check" style="color:#fff;font-size:1.5rem;"></i></div>
+                    <h2 style="font-size:1.2rem;margin-bottom:8px;">${message}</h2>
+                    <p style="font-size:0.875rem;color:#555;margin-bottom:24px;">You are now signed in to your account.</p>
+                    <button onclick="location.href='index.html'" style="padding:10px 28px;background:#FFD814;border:1px solid #FCD200;border-radius:4px;font-size:0.9rem;font-weight:700;cursor:pointer;">
+                        Continue Shopping
+                    </button>
+                </div>`;
+            document.querySelectorAll(".auth-tab").forEach(t => t.style.display = "none");
+        }
+
+        // Initial render
+        renderSignIn();
+    </script>
+</body>
+</html>
